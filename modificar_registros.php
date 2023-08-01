@@ -19,6 +19,7 @@ $sql = $conexion->query("select * from personas where dpi=$dpi");
 <body>
     <form class="col-md-4 p-3 m-auto" method="POST">
         <h3 class="text-center text-secondary">MODIFICAR REGISTROS </H3>
+        <input type="hidden" name="iden" value="<?= $_GET["dpi"]?>">
         <?php
         include "controlador/modificar.php";
         while ($datos = $sql->fetch_object()) { ?>
@@ -49,7 +50,7 @@ $sql = $conexion->query("select * from personas where dpi=$dpi");
                 </div>
                 <div class="mb-3">
                     <label for="sexo" class="form-label">SEXO</label>
-                    <select id="sexo" name="sexo" required value= "<?= $datos->sexo?>">
+                    <select id="sexo" name="sexo" required >
                         <option value="masculino">Masculino</option>
                         <option value="femenino">Femenino</option>
                     </select>

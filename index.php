@@ -14,10 +14,11 @@
     <script>
 
         funcion eliminar(){
-            var respuesta=confirm("SE ELIMINARA REGISTRO ESTRAS SEGURO?");
+            var respuesta=confirm("SE ELIMINARA REGISTRO ESTAS SEGURO?");
             return respuesta 
         }
         </script>
+        
     <h1 class="text-center p-3">FORMULARIO</H1>
     <?php
     include "modelo/conexion.php";
