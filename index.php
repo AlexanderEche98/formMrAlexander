@@ -12,28 +12,29 @@
 
 <body>
     <script>
-
-        funcion eliminar(){
-            var respuesta=confirm("SE ELIMINARA REGISTRO ESTAS SEGURO?");
-            return respuesta 
+        function eliminar() {
+            var respuesta = confirm("SE ELIMINARÁ EL REGISTRO. ¿ESTÁS SEGURO?");
+            return respuesta;
         }
-        </script>
-        
-    <h1 class="text-center p-3">FORMULARIO</H1>
+    </script>
+
+    <h1 class="text-center p-3">FORMULARIO</h1>
+
     <?php
+    // se agregan el llamado de los demas archivos php 
     include "modelo/conexion.php";
     include "controlador/eliminar.php";
-    
+    include "controlador/buscar.php"; 
     ?>
+
     <div class="container-fluid row">
         <div class="row">
             <form class="col-md-4 p-3 " method="POST">
                 <h3 class="text-center text-secondary"> REGISTROS </H3>
                 <?php
-                 
-                 include "controlador/registros.php"
-
-
+                include "controlador/registros.php";
+                ?>
+                <!-- Campos del formulario de los  registros -->
                 ?>
                 <div class="mb-3">
                     <div class="mb-3">
@@ -90,15 +91,34 @@
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">NACIONALIDAD</label>
                         <input type="text" class="form-control" name="nacionalidad">
-
-                        <button type="submit" class="btn btn-primary" name="btnregistrar" value="ok">REGISTRAR</button>
+                <button type="submit" class="btn btn-primary" name="btnregistrar" value="ok">REGISTRAR</button>
             </form>
 
+            <!-- Formulario para buscar -->
+            <form class="col-md-4 p-3" method="GET">
+                <h3 class="text-center text-secondary">BÚSQUEDA</h3>
+                <div class="mb-3">
+            <!-- Selección del tipo de busqueda  -->
+                    <label for="busqueda" class="form-label">Buscar por:</label>
+                    <select class="form-select" name="tipo_busqueda">
+                        <option value="dpi">DPI</option>
+                        <option value="nombre">Primer Nombre</option>
+                        <option value="fecha">Fecha de Nacimiento</option>
+                    </select>
+            <!-- Entrada de búsqueda -->
+                    <input type="text" class="form-control mt-3" name="busqueda" id="busqueda">
+                </div>
+            <!-- Botón iniciar la búsqueda -->   
+                <button type="submit" class="btn btn-primary" name="btnbuscar">BUSCAR</button>
+            </form>
+
+            <!-- Tabla para mostrar los registros de la busqueda-->
             <div class="col-md-8 p-4">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col"> DPI</th>
+                            <!-- Encabezados de la tabla -->
+                            <th scope="col">DPI</th>
                             <th scope="col">Primer Nombre</th>
                             <th scope="col">Segundo Nombre</th>
                             <th scope="col">Tercer Nombre</th>
@@ -116,32 +136,66 @@
                     </thead>
                     <tbody>
                         <?php
-                        include "modelo/conexion.php";
-                        $sql = $conexion->query("select * from personas");
-                        while ($datos = $sql->fetch_object()) { ?>
-                            <tr>
-                                <td><?= $datos->dpi ?></td>
-                                <td><?= $datos->primer_nombre ?></td>
-                                <td><?= $datos->segundo_nombre ?></td>
-                                <td><?= $datos->tercer_nombre ?></td>
-                                <td><?= $datos->primer_apellido ?></td>
-                                <td><?= $datos->segundo_apellido ?></td>
-                                <td><?= $datos->sexo ?></td>
-                                <td><?= $datos->fecha_nacimiento ?></td>
-                                <td><?= $datos->lugar_nacimiento ?></td>
-                                <td><?= $datos->vencindad ?></td>
-                                <td><?= $datos->estado_civil ?></td>
-                                <<td><?= $datos->fecha_vencimiento ?></td>
-                                <td><?= $datos->nacionalidad ?></td>
-                                <td>
-                                        <a href="modificar_registros.php?dpi=<?=$datos->dpi?>" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <a onclick="return eliminar()" href="index.php?dpi=<?=$datos->dpi?>" class="btn btn-small btn-danger"><i class="fa-solid fa-delete-left"></i></a>
+                        // Comprobación si hay resultados de búsqueda
+                        if (isset($result)) {
+                            while ($datos = $result->fetch_object()) {
+                                // Muestra los resultados de búsqueda
+                                ?>
+                                <tr>
+                                    <td><?= $datos->dpi ?></td>
+                                    <td><?= $datos->primer_nombre ?></td>
+                                    <td><?= $datos->segundo_nombre ?></td>
+                                    <td><?= $datos->tercer_nombre ?></td>
+                                    <td><?= $datos->primer_apellido ?></td>
+                                    <td><?= $datos->segundo_apellido ?></td>
+                                    <td><?= $datos->sexo ?></td>
+                                    <td><?= $datos->fecha_nacimiento ?></td>
+                                    <td><?= $datos->lugar_nacimiento ?></td>
+                                    <td><?= $datos->vencindad ?></td>
+                                    <td><?= $datos->estado_civil ?></td>
+                                    <td><?= $datos->fecha_vencimiento ?></td>
+                                    <td><?= $datos->nacionalidad ?></td>
+                                    <td>
+                                        <a href="modificar_registros.php?dpi=<?= $datos->dpi ?>"
+                                            class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a onclick="return eliminar()" href="index.php?dpi=<?= $datos->dpi ?>"
+                                            class="btn btn-small btn-danger"><i class="fa-solid fa-delete-left"></i></a>
                                     </td>
-                            </tr>
-
-                        <?php }
+                                </tr>
+                            <?php
+                            }
+                        } else {
+                            // Mostrar todos los registros si no hay resultados de búsqueda
+                            $sql = $conexion->query("SELECT * FROM personas");
+                            while ($datos = $sql->fetch_object()) {
+                                // Muestra todos los registros
+                                ?>
+                                <tr>
+                                    <td><?= $datos->dpi ?></td>
+                                    <td><?= $datos->primer_nombre ?></td>
+                                    <td><?= $datos->segundo_nombre ?></td>
+                                    <td><?= $datos->tercer_nombre ?></td>
+                                    <td><?= $datos->primer_apellido ?></td>
+                                    <td><?= $datos->segundo_apellido ?></td>
+                                    <td><?= $datos->sexo ?></td>
+                                    <td><?= $datos->fecha_nacimiento ?></td>
+                                    <td><?= $datos->lugar_nacimiento ?></td>
+                                    <td><?= $datos->vencindad ?></td>
+                                    <td><?= $datos->estado_civil ?></td>
+                                    <td><?= $datos->fecha_vencimiento ?></td>
+                                    <td><?= $datos->nacionalidad ?></td>
+                                    <td>
+                                         <!-- Enlaces para editar y eliminar registros -->
+                                        <a href="modificar_registros.php?dpi=<?= $datos->dpi ?>"
+                                            class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a onclick="return eliminar()" href="index.php?dpi=<?= $datos->dpi ?>"
+                                            class="btn btn-small btn-danger"><i class="fa-solid fa-delete-left"></i></a>
+                                    </td>
+                                </tr>
+                            <?php
+                            }
+                        }
                         ?>
-
                     </tbody>
                 </table>
             </div>
